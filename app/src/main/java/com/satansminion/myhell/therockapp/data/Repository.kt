@@ -74,15 +74,6 @@ class Repository private constructor(private val songDao: SongDao) {
     }
 
 
-//    private suspend fun fetchUrlData(): ArrayList<Song> = runBlocking {
-//
-//        withContext(Dispatchers.IO) {
-//            Log.d(TAG, "Got to fetchUrlData")
-//            withContextFetchData()
-//        }
-//
-//    }
-
     private fun fetchUrlData(): ArrayList<Song>  = runBlocking {
         //            Log.d(TAG, "Got to fetchUrlData")
 //            withContextFetchData()
@@ -92,7 +83,7 @@ class Repository private constructor(private val songDao: SongDao) {
 
     }
 
-    fun withContextFetchData(): ArrayList<Song> {
+    private fun withContextFetchData(): ArrayList<Song> {
         Log.d(TAG, "Got to withContextFetchData")
         val songArray = arrayListOf<Song>()
         Log.d(TAG, "withContextFetchData: Starting")
@@ -133,7 +124,7 @@ class Repository private constructor(private val songDao: SongDao) {
     private fun getDateFrom(): String {
 
         val c: Calendar = Calendar.getInstance()
-        val now = c.timeInMillis
+//        val now = c.timeInMillis
 
         c.set(Calendar.HOUR_OF_DAY, 0)
         c.set(Calendar.MINUTE, 0)

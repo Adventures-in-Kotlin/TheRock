@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModel
 import com.satansminion.myhell.therockapp.data.Repository
 import com.satansminion.myhell.therockapp.data.SavedSong
 import com.satansminion.myhell.therockapp.data.Song
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 
 private const val TAG = "MainViewModel"
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
 
-    fun getJsonData(): LiveData<ArrayList<Song>> {
+    fun getJsonData(): LiveData<ArrayList<Song>>  {
         Log.d(TAG, "getJsonData: Got Here")
 //        return repository.getJsonData()
 
         return repository.getNewJsonData()
     }
 
-//    fun getJsonResults() = repository.searchResults//: LiveData<ArrayList<Song>>{
-//        return jsonResults
-//    }
 
     fun insertSavedSong(song: Song) {
         val savedSong = SavedSong(song.title, song.artist, song.played_date, song.played_time, song.artwork)
