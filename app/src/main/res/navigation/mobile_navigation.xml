@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/mobile_navigation"
+            app:startDestination="@id/mainFragment">
+
+    <fragment android:id="@+id/mainFragment" android:name="com.satansminion.myhell.therockapp.ui.main.MainFragment"
+              android:label="@string/app_name" tools:layout="@layout/main_fragment">
+        <action android:id="@+id/action_mainFragment_to_aboutDialogFragment" app:destination="@id/about_dest"
+                app:popUpTo="@+id/about_dest"
+        />
+        <action android:id="@+id/action_mainFragment_to_fav_dest" app:destination="@id/fav_dest"/>
+
+    </fragment>
+    <fragment android:id="@+id/about_dest"
+              android:name="com.satansminion.myhell.therockapp.ui.main.AboutDialogFragment"
+              android:label="@string/title_activity_about"
+              tools:layout="@layout/custom_about_dialog">
+        <action android:id="@+id/action_about_dest_to_mainFragment" app:destination="@id/mainFragment"
+        />
+    </fragment>
+    <fragment android:id="@+id/fav_dest"
+              android:name="com.satansminion.myhell.therockapp.ui.main.FavoritesFragment"
+              android:label="Favorites" tools:layout="@layout/fragment_favorites">
+        <action android:id="@+id/action_fav_dest_to_mainFragment" app:destination="@id/mainFragment"/>
+    </fragment>
+</navigation>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="colorPrimary">#263238</color>
+    <color name="colorPrimaryDark">#000A12</color>
+    <color name="colorAccent">#f44336</color>
+    <color name="colorPrimaryLight">#4F5B62</color>
+
+    <color name="colorMainText">#FFFFFF</color>
+
+    <color name="colorAboutText">#999999</color>
+    <color name="colorTextLink">#141549</color>
+
+    <color name="refresh_progress_1">#4F5B62</color>
+    <color name="refresh_progress_2">#ba000d</color>
+    <color name="refresh_progress_3">#999999</color>
+    <color name="refresh_progress_4">#f44336</color>
+
+
+
+    <!--<color name="colorPrimary">#008577</color>-->
+    <!--<color name="colorPrimaryDark">#00574B</color>-->
+    <!--<color name="colorAccent">#D81B60</color>-->
+</resources>

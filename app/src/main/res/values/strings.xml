@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">The Rock App</string>
+    <string name="tv_time_date_label">Time/Date:</string>
+    <string name="tv_title_label">Title:</string>
+    <string name="tv_artist_label">Artist:</string>
+    <string name="tv_no_data_text">No data available</string>
+    <string name="mnu_info">About The Rock</string>
+    <string name="about_terms_one">This app is based on the Rock\'s competion The No Repeat Workday and uses the data
+        that is available from their website.
+    </string>
+    <string name="about_tc_link_string">
+        https://cdn.mediaworks.nz/aem/fanzones/Promo_T_Cs_The_Rock_1000_No_Repeat_Workday.pdf
+    </string>
+    <string name="about_terms_two">I make no guarantee as to the validity or accuracy of the information
+        supplied by this app.
+    </string>
+    <string name="rock_website_norepeat">https://www.therock.net.nz/home/music/the-no-repeat-workday.html</string>
+    <string name="about_comp_tc_text">Refer to their Terms and Conditions for competition rules available at:</string>
+    <string name="rock_copyright">I do not own any rights to this material.\nThe Rock logo and the information presented
+        is Copyright © 2019 MediaWorks Radio.
+    </string>
+    <string name="btn_close_text">Close</string>
+    <string name="title_activity_about">About</string>
+    <string name="rock_image_logo">The Rock logo</string>
+
+    <string name="artwork_text">Album Cover</string>
+
+
+    <string name="mnu_playlist">Playlist</string>
+    <string name="mnu_favorites">Favorites</string>
+    <string name="btn_delete_text">Delete all</string>
+    <string name="about_logo_attribution">The splash-screen logo:\nChanelpotaka\n[CC BY-SA 4.0\n(https://creativecommons.org/licenses/by-sa/4.0)],\nfrom Wikimedia Commons</string>
+    <string name="about_logo_attribution_link">https://creativecommons.org/licenses/by-sa/4.0</string>
+</resources>
