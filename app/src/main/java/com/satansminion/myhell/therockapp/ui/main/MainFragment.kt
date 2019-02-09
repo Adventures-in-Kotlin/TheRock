@@ -50,7 +50,7 @@ class MainFragment : Fragment(), RecyclerItemClickListener.OnRecyclerClickListen
         mHandler = Handler()
 
         val recycler: RecyclerView? = view?.findViewById(R.id.songView)
-        adapter = SongAdapter(this)
+        adapter = SongAdapter()
         recycler?.layoutManager = LinearLayoutManager(context)
 //        recycler?.setHasFixedSize(true)
         recycler?.adapter = adapter

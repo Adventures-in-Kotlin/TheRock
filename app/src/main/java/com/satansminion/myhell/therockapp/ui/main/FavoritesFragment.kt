@@ -45,7 +45,7 @@ class FavoritesFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
 
         val recycler: RecyclerView? = view?.findViewById(R.id.favoritesView)
-        adapter = FavoritesAdapter(this)
+        adapter = FavoritesAdapter()
         recycler?.layoutManager = LinearLayoutManager(context)
         recycler?.setHasFixedSize(true)
         recycler?.adapter = adapter

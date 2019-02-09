@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.satansminion.myhell.therockapp.R
 import com.satansminion.myhell.therockapp.data.SavedSong
@@ -29,9 +28,9 @@ class FavViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var songTitle: TextView = view.findViewById(R.id.tvSongTitle)
 }
 
-class FavoritesAdapter(val frag: Fragment) : RecyclerView.Adapter<FavViewHolder>() {
+class FavoritesAdapter() : RecyclerView.Adapter<FavViewHolder>() {
     private var songList: List<SavedSong>? = null
-    private var _frag: Fragment? = null
+
 
     override fun onBindViewHolder(holder: FavViewHolder, position: Int) {
         if (songList!!.isEmpty()) {
@@ -54,7 +53,7 @@ class FavoritesAdapter(val frag: Fragment) : RecyclerView.Adapter<FavViewHolder>
     }
 
     init {
-        _frag = frag
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {

@@ -59,7 +59,8 @@ class Repository private constructor(private val songDao: SongDao) {
 
     fun getNewJsonData(): LiveData<ArrayList<Song>> {
         Log.d(TAG, "Got to getNewJsonData")
-        val jsonData = runBlocking(Dispatchers.IO) { fetchUrlData() }
+        Log.d(TAG,"*******getNewJsonData: ${Thread.currentThread().name}")
+        val jsonData = fetchUrlData()
         val liveSongData = MutableLiveData<ArrayList<Song>>()
         liveSongData.value = jsonData
         return liveSongData
@@ -73,21 +74,31 @@ class Repository private constructor(private val songDao: SongDao) {
     }
 
 
-    private suspend fun fetchUrlData(): ArrayList<Song> = runBlocking {
+//    private suspend fun fetchUrlData(): ArrayList<Song> = runBlocking {
+//
+//        withContext(Dispatchers.IO) {
+//            Log.d(TAG, "Got to fetchUrlData")
+//            withContextFetchData()
+//        }
+//
+//    }
 
-        withContext(Dispatchers.IO) {
-            Log.d(TAG, "Got to fetchUrlData")
-            withContextFetchData()
-        }
+    private fun fetchUrlData(): ArrayList<Song>  = runBlocking {
+        //            Log.d(TAG, "Got to fetchUrlData")
+//            withContextFetchData()
+        return@runBlocking withContext(Dispatchers.Default) {
+            Log.d(TAG,"*******fetchUrlData: ${Thread.currentThread().name}")
+            withContextFetchData() }
 
     }
 
     fun withContextFetchData(): ArrayList<Song> {
         Log.d(TAG, "Got to withContextFetchData")
         val songArray = arrayListOf<Song>()
-        Log.d(TAG, "fetchUrlData: Starting")
+        Log.d(TAG, "withContextFetchData: Starting")
         try {
-            Log.d(TAG, "fetchUrlData: Try - $jsonDataUrlBase")
+            Log.d(TAG,"*******withContextFetchData: ${Thread.currentThread().name}")
+            Log.d(TAG, "withContextFetchData: Try - $jsonDataUrlBase")
             val entireJson = URL(jsonDataUrlBase).readText()
 
             val klax = Klaxon()
@@ -97,9 +108,13 @@ class Repository private constructor(private val songDao: SongDao) {
                     while (reader.hasNext()) {
                         val song = klax.parse<Song>(reader)
                         songArray.add(song!!)
+
                     }
+
                 }
+
             }
+            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
             Log.d(TAG, "Array Size: ${songArray.size}")
         } catch (ex: Exception) {
             Log.e(TAG, "Error: ${ex.message}")

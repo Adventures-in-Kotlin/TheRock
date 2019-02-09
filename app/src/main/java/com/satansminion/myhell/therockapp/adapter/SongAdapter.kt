@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.satansminion.myhell.therockapp.R
 import com.satansminion.myhell.therockapp.data.Song
@@ -29,10 +28,10 @@ class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
 private const val TAG = "SongAdapter"
 
-class SongAdapter(val frag: Fragment) : RecyclerView.Adapter<FavViewHolder>() {
+class SongAdapter() : RecyclerView.Adapter<FavViewHolder>() {
 
     private var songList: ArrayList<Song>? = null
-    private var _frag: Fragment? = null
+
 
     private var listener: AdapterView.OnItemClickListener? = null
 
@@ -57,12 +56,12 @@ class SongAdapter(val frag: Fragment) : RecyclerView.Adapter<FavViewHolder>() {
     }
 
     init {
-        _frag = frag
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.song_item, parent, false)
-        parent.background.alpha = 0
+//        parent.background.alpha = 0
 
 
         return FavViewHolder(v)
