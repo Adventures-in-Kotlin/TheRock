@@ -17,13 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.satansminion.myhell.therockapp.R
 import com.satansminion.myhell.therockapp.adapter.SongAdapter
-import com.satansminion.myhell.therockapp.data.Song
 import com.satansminion.myhell.therockapp.utilities.InjectorUtils
 import com.satansminion.myhell.therockapp.utilities.RecyclerItemClickListener
 import com.satansminion.myhell.therockapp.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.main_fragment.*
 import kotlinx.coroutines.Runnable
-import java.util.ArrayList
 import java.util.Random
 
 private const val TAG = "MainFragment"
@@ -49,13 +47,15 @@ class MainFragment : Fragment(), RecyclerItemClickListener.OnRecyclerClickListen
         mRandom = Random()
         mHandler = Handler()
 
-        val recycler: RecyclerView? = view?.findViewById(R.id.songView)
-        adapter = SongAdapter()
-        recycler?.layoutManager = LinearLayoutManager(context)
-//        recycler?.setHasFixedSize(true)
-        recycler?.adapter = adapter
+        val recycler: RecyclerView = view.findViewById(R.id.songView)
 
-        recycler?.addOnItemTouchListener(RecyclerItemClickListener(requireContext(), recycler,this))
+        recycler.layoutManager = LinearLayoutManager(context)
+        recycler.setHasFixedSize(true)
+
+        adapter = SongAdapter()
+        recycler.adapter = adapter
+
+        recycler.addOnItemTouchListener(RecyclerItemClickListener(requireContext(), recycler,this))
 
         return view
     }
@@ -98,13 +98,7 @@ class MainFragment : Fragment(), RecyclerItemClickListener.OnRecyclerClickListen
     }
 
     override fun onItemLongClick(view: View, position: Int) {
-
 //        Doing nothing on the long click
-
-//        Log.d(TAG, "onItemLongClick: clicked")
-//        val theSong = adapter.getSongAt(position)
-//        Toast.makeText(context, "Long tap song is ${theSong.title}", Toast.LENGTH_SHORT).show()
-
     }
 
     private fun isNetworkConnected(): Boolean {
@@ -120,18 +114,16 @@ class MainFragment : Fragment(), RecyclerItemClickListener.OnRecyclerClickListen
     private fun getSongsRefresh() {
         refreshView.isRefreshing = true
         if (isNetworkConnected()) {
-            Log.d(TAG, "getSongsRefresh: start")
-            Log.d(TAG, "getSongsRefresh: calling viewModel.getJsonResults()")
-
-//            refreshView.isRefreshing = true
-            val updateUI = Observer<ArrayList<Song>> { songList ->
-                refreshView.isRefreshing = true
+            viewModel.songJsonData.observe(viewLifecycleOwner, Observer { songList ->
                 adapter.setSongList(songList)
-
-                refreshView.isRefreshing = false
-            }
-            viewModel.getJsonData().observe(this, updateUI)
+            })
         }
         refreshView.isRefreshing = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "********************Stopped")
+        viewModel.songJsonData.removeObservers(viewLifecycleOwner)
     }
 }

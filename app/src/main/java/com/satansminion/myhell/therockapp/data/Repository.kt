@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.StringReader
@@ -37,35 +35,44 @@ class Repository private constructor(private val songDao: SongDao) {
             }
     }
 
-    fun insertSavedSong(savedSong: SavedSong) = runBlocking {
-        GlobalScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "Got to Repository - ${Thread.currentThread().name}")
-            songDao.insert(savedSong)
-        }
+    suspend fun insertSavedSong(savedSong: SavedSong) {
+        withContext(Dispatchers.IO) {
+//            Check if the song is already in the database
+            val checkedSong = withContext(Dispatchers.Default) {
+                songDao.getByTitleAndArtist(
+                    savedSong.title,
+                    savedSong.artist
+                )
+            }
+//            if the song has already been saved to the database
+//            don't bother to save it again
+            if (checkedSong.isNullOrEmpty()){
+                songDao.insert(savedSong)
+            }
 
+
+        }
     }
 
     //    fun getAllSavedSongs() = songDao.getAllSavedSongs()
     fun getAllSavedSongs(): LiveData<List<SavedSong>> {
-        val savedSong = runBlocking(Dispatchers.IO) { getSavedSongs() }
+        val savedSong = songDao.getAllSavedSongs()//  getSavedSongs()
         return savedSong
     }
 
-    suspend fun getSavedSongs(): LiveData<List<SavedSong>> =
-        runBlocking { withContext(Dispatchers.IO) { songDao.getAllSavedSongs() } }
+//    suspend fun getSavedSongs(): LiveData<List<SavedSong>> =
+//        runBlocking { withContext(Dispatchers.IO) { songDao.getAllSavedSongs() } }
 
-    fun deleteAllSavedSongs() = runBlocking(Dispatchers.IO) { songDao.deleteAllSavedSongs() }
+    suspend fun deleteAllSavedSongs() = withContext(Dispatchers.IO) { songDao.deleteAllSavedSongs() }
 
-
-    fun getNewJsonData(): LiveData<ArrayList<Song>> {
+    fun getNewJsonData(): LiveData<List<Song>> {
         Log.d(TAG, "Got to getNewJsonData")
-        Log.d(TAG,"*******getNewJsonData: ${Thread.currentThread().name}")
+        Log.d(TAG, "*******getNewJsonData: ${Thread.currentThread().name}")
         val jsonData = fetchUrlData()
-        val liveSongData = MutableLiveData<ArrayList<Song>>()
+        val liveSongData = MutableLiveData<List<Song>>()
         liveSongData.value = jsonData
         return liveSongData
     }
-
 
     init {
         jsonDataUrlBase =
@@ -73,22 +80,22 @@ class Repository private constructor(private val songDao: SongDao) {
         Log.d(TAG, "init - URL: $jsonDataUrlBase")
     }
 
-
-    private fun fetchUrlData(): ArrayList<Song>  = runBlocking {
+    private fun fetchUrlData(): List<Song> = runBlocking {
         //            Log.d(TAG, "Got to fetchUrlData")
 //            withContextFetchData()
         return@runBlocking withContext(Dispatchers.Default) {
-            Log.d(TAG,"*******fetchUrlData: ${Thread.currentThread().name}")
-            withContextFetchData() }
+            Log.d(TAG, "*******fetchUrlData: ${Thread.currentThread().name}")
+            withContextFetchData()
+        }
 
     }
 
-    private fun withContextFetchData(): ArrayList<Song> {
+    private fun withContextFetchData(): List<Song> {
         Log.d(TAG, "Got to withContextFetchData")
         val songArray = arrayListOf<Song>()
         Log.d(TAG, "withContextFetchData: Starting")
         try {
-            Log.d(TAG,"*******withContextFetchData: ${Thread.currentThread().name}")
+            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
             Log.d(TAG, "withContextFetchData: Try - $jsonDataUrlBase")
             val entireJson = URL(jsonDataUrlBase).readText()
 
@@ -99,7 +106,6 @@ class Repository private constructor(private val songDao: SongDao) {
                     while (reader.hasNext()) {
                         val song = klax.parse<Song>(reader)
                         songArray.add(song!!)
-
                     }
 
                 }
@@ -112,7 +118,7 @@ class Repository private constructor(private val songDao: SongDao) {
         }
 
         Log.d(TAG, "Song count: ${songArray.size}")
-        return songArray
+        return songArray.toList()
     }
 
     private fun getDateTo(): String {

@@ -5,7 +5,7 @@
     <string name="tv_artist_label">Artist:</string>
     <string name="tv_no_data_text">No data available</string>
     <string name="mnu_info">About The Rock</string>
-    <string name="about_terms_one">This app is based on the Rock\'s competion The No Repeat Workday and uses the data
+    <string name="about_terms_one">This app is based on the Rock\'s competition The No Repeat Workday and uses the data
         that is available from their website.
     </string>
     <string name="about_tc_link_string">
@@ -31,4 +31,5 @@
     <string name="btn_delete_text">Delete all</string>
     <string name="about_logo_attribution">The splash-screen logo:\nChanelpotaka\n[CC BY-SA 4.0\n(https://creativecommons.org/licenses/by-sa/4.0)],\nfrom Wikimedia Commons</string>
     <string name="about_logo_attribution_link">https://creativecommons.org/licenses/by-sa/4.0</string>
+    <string name="empty_favorites_list">Your list is empty!</string>
 </resources>

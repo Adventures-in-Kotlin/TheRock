@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.satansminion.myhell.therockapp.R
 import com.satansminion.myhell.therockapp.data.SavedSong
@@ -21,40 +23,32 @@ import com.squareup.picasso.Picasso
  */
 private const val TAG = "FavoritesAdapter"
 
-class FavViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    var artistImage: ImageView = view.findViewById(R.id.imageArtwork)
-    var songDateTime: TextView = view.findViewById(R.id.tvTimeDate)
-    var songArtist: TextView = view.findViewById(R.id.tvArtist)
-    var songTitle: TextView = view.findViewById(R.id.tvSongTitle)
-}
-
-class FavoritesAdapter() : RecyclerView.Adapter<FavViewHolder>() {
+class FavoritesAdapter : ListAdapter<SavedSong, FavoritesAdapter.FavViewHolder>(FavSongListDiffCallback()) {
     private var songList: List<SavedSong>? = null
 
-
     override fun onBindViewHolder(holder: FavViewHolder, position: Int) {
-        if (songList!!.isEmpty()) {
-            holder.songArtist.setText(R.string.tv_no_data_text)
-            holder.songTitle.setText(R.string.tv_no_data_text)
-            holder.songDateTime.setText(R.string.tv_no_data_text)
-        } else {
-            val songItem = songList!![position]
-            holder.songTitle.text = songItem.title
-            holder.songArtist.text = songItem.artist
-            val newTime = songItem.played_time.substring(0, 5)
-            val datetime = "$newTime on ${songItem.played_date}"
-            holder.songDateTime.text = datetime
+        with(holder){
+            if (songList!!.isEmpty()) {
+                songArtist.setText(R.string.tv_no_data_text)
+                songTitle.setText(R.string.tv_no_data_text)
+                songDateTime.setText(R.string.tv_no_data_text)
+            } else {
+                val songItem = songList!![position]
+                songTitle.text = songItem.title
+                songArtist.text = songItem.artist
+                val newTime = songItem.played_time.substring(0, 5)
+                val datetime = "$newTime on ${songItem.played_date}"
+                songDateTime.text = datetime
 
-            Picasso.get()
-                .load(songItem.artwork)
-                .placeholder(R.drawable.ic_broken_image)
-                .into(holder.artistImage)
+                Picasso.get()
+                    .load(songItem.artwork)
+                    .placeholder(R.drawable.ic_broken_image)
+                    .into(artistImage)
+            }
         }
-    }
-
-    init {
 
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.song_item, parent, false)
@@ -76,4 +70,20 @@ class FavoritesAdapter() : RecyclerView.Adapter<FavViewHolder>() {
         return songList!![position]
     }
 
+    class FavViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var artistImage: ImageView = view.findViewById(R.id.imageArtwork)
+        var songDateTime: TextView = view.findViewById(R.id.tvTimeDate)
+        var songArtist: TextView = view.findViewById(R.id.tvArtist)
+        var songTitle: TextView = view.findViewById(R.id.tvSongTitle)
+    }
+}
+
+private class FavSongListDiffCallback : DiffUtil.ItemCallback<SavedSong>() {
+    override fun areItemsTheSame(oldItem: SavedSong, newItem: SavedSong): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: SavedSong, newItem: SavedSong): Boolean {
+        return oldItem == newItem
+    }
 }

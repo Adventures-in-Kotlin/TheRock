@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ImageView
+
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.satansminion.myhell.therockapp.R
 import com.satansminion.myhell.therockapp.data.Song
@@ -19,59 +22,48 @@ import com.squareup.picasso.Picasso
  *
  */
 
-class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    var artistImage: ImageView = view.findViewById(R.id.imageArtwork)
-    var songDateTime: TextView = view.findViewById(R.id.tvTimeDate)
-    var songArtist: TextView = view.findViewById(R.id.tvArtist)
-    var songTitle: TextView = view.findViewById(R.id.tvSongTitle)
-}
-
 private const val TAG = "SongAdapter"
 
-class SongAdapter() : RecyclerView.Adapter<FavViewHolder>() {
+class SongAdapter : ListAdapter<Song, SongAdapter.SongViewHolder>(SongListDiffCallback()) {
 
-    private var songList: ArrayList<Song>? = null
-
+    private var songList: List<Song>? = null
 
     private var listener: AdapterView.OnItemClickListener? = null
 
-    override fun onBindViewHolder(holder: FavViewHolder, position: Int) {
-        if (songList!!.isEmpty()) {
-            holder.songArtist.setText(R.string.tv_no_data_text)
-            holder.songTitle.setText(R.string.tv_no_data_text)
-            holder.songDateTime.setText(R.string.tv_no_data_text)
-        } else {
-            val songItem = songList!![position]
-            holder.songTitle.text = songItem.title
-            holder.songArtist.text = songItem.artist
-            val newTime = songItem.played_time.substring(0, 5)
-            val datetime = "$newTime on ${songItem.played_date}"
-            holder.songDateTime.text = datetime
+    override fun onBindViewHolder(holder: SongViewHolder, position: Int) {
+        with(holder){
+            if (songList!!.isEmpty()) {
+                songArtist.setText(R.string.tv_no_data_text)
+                songTitle.setText(R.string.tv_no_data_text)
+                songDateTime.setText(R.string.tv_no_data_text)
+            } else {
+                val songItem = songList!![position]
+                songTitle.text = songItem.title
+                songArtist.text = songItem.artist
+                val newTime = songItem.played_time.substring(0, 5)
+                val datetime = "$newTime on ${songItem.played_date}"
+                songDateTime.text = datetime
 
-            Picasso.get()
-                .load(songItem.artwork)
-                .placeholder(R.drawable.ic_broken_image)
-                .into(holder.artistImage)
+                Picasso.get()
+                    .load(songItem.artwork)
+                    .placeholder(R.drawable.ic_broken_image)
+                    .into(artistImage)
+            }
         }
-    }
-
-    init {
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.song_item, parent, false)
 //        parent.background.alpha = 0
-
-
-        return FavViewHolder(v)
+        return SongViewHolder(v)
     }
 
     override fun getItemCount(): Int {
         return if (songList == null) 0 else songList!!.size
     }
 
-    fun setSongList(Songs: ArrayList<Song>): Boolean {
+    fun setSongList(Songs: List<Song>): Boolean {
         Log.d(TAG, "setSongList")
         songList = Songs
         notifyDataSetChanged()
@@ -82,5 +74,20 @@ class SongAdapter() : RecyclerView.Adapter<FavViewHolder>() {
         return songList!![position]
     }
 
+    class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var artistImage: ImageView = view.findViewById(R.id.imageArtwork)
+        var songDateTime: TextView = view.findViewById(R.id.tvTimeDate)
+        var songArtist: TextView = view.findViewById(R.id.tvArtist)
+        var songTitle: TextView = view.findViewById(R.id.tvSongTitle)
+    }
+}
 
+private class SongListDiffCallback : DiffUtil.ItemCallback<Song>() {
+    override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem.title == newItem.title
+    }
+
+    override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+        return oldItem == newItem
+    }
 }

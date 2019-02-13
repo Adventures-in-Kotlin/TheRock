@@ -49,32 +49,32 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.about_dest -> {
-                val options = navOptions {
-                    anim {
-                        enter = R.anim.slide_in_left
-                        exit = R.anim.slide_out_left
-                        popEnter = R.anim.slide_in_right
-                        popExit = R.anim.slide_out_right
-                    }
-                }
-                findNavController(R.id.my_nav_host_fragment).navigate(R.id.about_dest, null, options)
+//                val options = navOptions {
+//                    anim {
+//                        enter = R.anim.slide_in_left
+//                        exit = R.anim.slide_out_left
+//                        popEnter = R.anim.slide_in_right
+//                        popExit = R.anim.slide_out_right
+//                    }
+//                }
+                findNavController(R.id.my_nav_host_fragment).navigate(R.id.about_dest, null, getAnimOptions())
                 return true
             }
             R.id.fav_dest -> {
-                val options = navOptions {
-                    anim {
-                        enter = R.anim.slide_in_left
-                        exit = R.anim.slide_out_left
-                        popEnter = R.anim.slide_in_right
-                        popExit = R.anim.slide_out_right
-                    }
-                }
-                findNavController(R.id.my_nav_host_fragment).navigate(R.id.fav_dest, null, options)
+//                val options = navOptions {
+//                    anim {
+//                        enter = R.anim.slide_in_left
+//                        exit = R.anim.slide_out_left
+//                        popEnter = R.anim.slide_in_right
+//                        popExit = R.anim.slide_out_right
+//                    }
+//                }
+                findNavController(R.id.my_nav_host_fragment).navigate(R.id.fav_dest, null, getAnimOptions())
                 return true
             }
             R.id.mainFragment -> {
-                val options = getAnimOptions()
-                findNavController(R.id.my_nav_host_fragment).navigate(R.id.mainFragment, null, options)
+//                val options = getAnimOptions()
+                findNavController(R.id.my_nav_host_fragment).navigate(R.id.mainFragment, null, getAnimOptions())
 //                Toast.makeText(baseContext,getString(R.string.loading_playlist_toast_message),Toast.LENGTH_SHORT).show()
             }
         }

@@ -24,4 +24,7 @@ interface SongDao {
     @Query("SELECT * FROM rockSong ORDER BY played_date, played_time DESC")
     fun getAllSavedSongs() : LiveData<List<SavedSong>>
 
+    @Query("SELECT * FROM rockSong WHERE title = :title AND artist = :artist")
+    fun getByTitleAndArtist(title: String, artist: String) : List<SavedSong>
+
 }

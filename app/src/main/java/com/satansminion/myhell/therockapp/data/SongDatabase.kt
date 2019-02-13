@@ -19,7 +19,7 @@ abstract class SongDatabase : RoomDatabase() {
     abstract fun songDao(): SongDao
 
     companion object {
-        private var INSTANCE: SongDatabase? = null
+        @Volatile private var INSTANCE: SongDatabase? = null
 
         internal fun getInstance(context: Context): SongDatabase? {
             if (INSTANCE == null) {
