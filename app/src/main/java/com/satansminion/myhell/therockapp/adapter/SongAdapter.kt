@@ -64,7 +64,7 @@ class SongAdapter : ListAdapter<Song, SongAdapter.SongViewHolder>(SongListDiffCa
     }
 
     fun setSongList(Songs: List<Song>): Boolean {
-        Log.d(TAG, "setSongList")
+        Log.d(TAG, "*setSongList")
         songList = Songs
         notifyDataSetChanged()
         return true

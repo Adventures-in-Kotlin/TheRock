@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.beust.klaxon.JsonReader
 import com.beust.klaxon.Klaxon
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.StringReader
 import java.net.URL
 import java.util.Calendar
+
 
 /**
  *
@@ -21,8 +21,6 @@ import java.util.Calendar
 private const val TAG = "Repository"
 
 class Repository private constructor(private val songDao: SongDao) {
-
-    private var jsonDataUrlBase = ""
 
     //    Create a singleton of the Dao
     companion object {
@@ -35,9 +33,34 @@ class Repository private constructor(private val songDao: SongDao) {
             }
     }
 
+    private var jsonDataUrlBase = ""
+
+    val songJsonData: MutableLiveData<List<Song>>
+        get() = _songJsonData
+
+    private var _songJsonData = MutableLiveData<List<Song>>()
+
+    init {
+        jsonDataUrlBase =
+            "https://radio-api.mediaworks.nz/radio-api/v2/station/therock/playedList?unique=true&fromUTC=${getDateFrom()}&toUTC=${getDateTo()}"
+        Log.d(TAG, "init - URL: $jsonDataUrlBase")
+    }
+
+    suspend fun getNewJsonData() {
+         withContext(Dispatchers.IO) {
+            Log.d(TAG, "***Got to getNewJsonData")
+            val jsonData = fetchUrlData()
+            Log.d(TAG, "*******jsonData: ${jsonData.size}")
+             songJsonData.postValue(jsonData)
+//             jsonData
+        }
+    }
+
+    suspend fun deleteAllSavedSongs() = withContext(Dispatchers.IO) { songDao.deleteAllSavedSongs() }
+
     suspend fun insertSavedSong(savedSong: SavedSong) {
         withContext(Dispatchers.IO) {
-//            Check if the song is already in the database
+            //            Check if the song is already in the database
             val checkedSong = withContext(Dispatchers.Default) {
                 songDao.getByTitleAndArtist(
                     savedSong.title,
@@ -46,10 +69,9 @@ class Repository private constructor(private val songDao: SongDao) {
             }
 //            if the song has already been saved to the database
 //            don't bother to save it again
-            if (checkedSong.isNullOrEmpty()){
+            if (checkedSong.isNullOrEmpty()) {
                 songDao.insert(savedSong)
             }
-
 
         }
     }
@@ -63,31 +85,11 @@ class Repository private constructor(private val songDao: SongDao) {
 //    suspend fun getSavedSongs(): LiveData<List<SavedSong>> =
 //        runBlocking { withContext(Dispatchers.IO) { songDao.getAllSavedSongs() } }
 
-    suspend fun deleteAllSavedSongs() = withContext(Dispatchers.IO) { songDao.deleteAllSavedSongs() }
 
-    fun getNewJsonData(): LiveData<List<Song>> {
-        Log.d(TAG, "Got to getNewJsonData")
-        Log.d(TAG, "*******getNewJsonData: ${Thread.currentThread().name}")
-        val jsonData = fetchUrlData()
-        val liveSongData = MutableLiveData<List<Song>>()
-        liveSongData.value = jsonData
-        return liveSongData
-    }
-
-    init {
-        jsonDataUrlBase =
-            "https://radio-api.mediaworks.nz/radio-api/v2/station/therock/playedList?unique=true&fromUTC=${getDateFrom()}&toUTC=${getDateTo()}"
-        Log.d(TAG, "init - URL: $jsonDataUrlBase")
-    }
-
-    private fun fetchUrlData(): List<Song> = runBlocking {
-        //            Log.d(TAG, "Got to fetchUrlData")
-//            withContextFetchData()
-        return@runBlocking withContext(Dispatchers.Default) {
-            Log.d(TAG, "*******fetchUrlData: ${Thread.currentThread().name}")
+    private suspend fun fetchUrlData(): List<Song> {
+        return withContext(Dispatchers.Default) {
             withContextFetchData()
         }
-
     }
 
     private fun withContextFetchData(): List<Song> {
@@ -95,7 +97,7 @@ class Repository private constructor(private val songDao: SongDao) {
         val songArray = arrayListOf<Song>()
         Log.d(TAG, "withContextFetchData: Starting")
         try {
-            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
+//            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
             Log.d(TAG, "withContextFetchData: Try - $jsonDataUrlBase")
             val entireJson = URL(jsonDataUrlBase).readText()
 
@@ -111,7 +113,7 @@ class Repository private constructor(private val songDao: SongDao) {
                 }
 
             }
-            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
+//            Log.d(TAG, "*******withContextFetchData: ${Thread.currentThread().name}")
             Log.d(TAG, "Array Size: ${songArray.size}")
         } catch (ex: Exception) {
             Log.e(TAG, "Error: ${ex.message}")
